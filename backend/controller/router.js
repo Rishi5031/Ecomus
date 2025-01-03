@@ -348,7 +348,7 @@ router.post('/bestseller', upload.fields([{ name: 'images' }]), async (req, res)
         });
 
         // Parse sizes from JSON string
-        const sizesArray = JSON.parse(sizes); 
+        const sizesArray = JSON.parse(sizes);
 
         // Create a new BestSeller item
         const newBestSeller = new BestSeller({
@@ -420,7 +420,7 @@ router.post('/register', async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: 'Email already Exists.' });
         }
-//   fhghgh
+        //   fhghgh
         // Encrypt the password before saving
         const encryptedPassword = cryptr.encrypt(password);
 
@@ -442,6 +442,51 @@ router.post('/register', async (req, res) => {
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+router.post('/happyclient', async (req, res) => {
+    try {
+        const happyClient = new HappyClient(req.body);
+        await happyClient.save();
+        res.status(201).send(happyClient);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+// Get all HappyClients
+router.get('/happyclient', async (req, res) => {
+    try {
+        const happyClients = await HappyClient.find();
+        res.status(200).send(happyClients);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+router.put('/happyclient/:id', async (req, res) => {
+    try {
+        const happyClient = await HappyClient.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!happyClient) {
+            return res.status(404).send('HappyClient not found');
+        }
+        res.status(200).send(happyClient);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+// Delete a HappyClient by ID
+router.delete('/happyclient/:id', async (req, res) => {
+    try {
+        const happyClient = await HappyClient.findByIdAndDelete(req.params.id);
+        if (!happyClient) {
+            return res.status(404).send('HappyClient not found');
+        }
+        res.status(200).send(happyClient);
+    } catch (error) {
+        res.status(500).send(error);
     }
 });
 
