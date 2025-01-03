@@ -5,6 +5,7 @@ const Hero = require('../model/modelHero')
 const Marquee = require('../model/modelMarquee');
 const ShopByCat = require('../model/modelShopByCat');
 const BestSeller = require('../model/modelBestSeller');
+const Review = require('../model/modelHappyClient');
 const User = require("../model/modelUser");
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotallySecretKey');
@@ -445,50 +446,78 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/happyclient', async (req, res) => {
+router.post('/happyclient', upload.single('image'), async (req, res) => {
     try {
-        const happyClient = new HappyClient(req.body);
-        await happyClient.save();
-        res.status(201).send(happyClient);
+        const { rating, description, productTitle, productPrice } = req.body;
+        const imageUrl = req.file ? req.file.path : null; // Get the path of the uploaded image
+
+        // Simple validation
+        if (!rating || !description || !productTitle || !productPrice) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        // Create a new review object
+        const newReview = new Review({
+            rating,
+            description,
+            imageUrl,
+            productTitle,
+            productPrice,
+        });
+
+        // Save the new review to the database
+        await newReview.save();
+        console.log("Review saved to DB successfully!");
+
+        // Respond with the newly created review
+        res.status(201).json({ message: 'Review created successfully!', review: newReview });
     } catch (error) {
-        res.status(400).send(error);
+        console.error('Error while saving review to DB:', error);
+
+        // Respond with error message
+        res.status(500).json({ message: 'Error while saving review', error });
     }
 });
+
+
 
 // Get all HappyClients
 router.get('/happyclient', async (req, res) => {
     try {
-        const happyClients = await HappyClient.find();
-        res.status(200).send(happyClients);
+        const reviews = await Review.find(); // Fetch all reviews from the database
+        res.status(200).json(reviews); // Respond with the list of reviews
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Error while fetching reviews:', error);
+
+        // Respond with error message
+        res.status(500).json({ message: 'Error while fetching reviews', error });
     }
 });
 
-router.put('/happyclient/:id', async (req, res) => {
-    try {
-        const happyClient = await HappyClient.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        if (!happyClient) {
-            return res.status(404).send('HappyClient not found');
-        }
-        res.status(200).send(happyClient);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-});
+// router.put('/happyclient/:id', async (req, res) => {
+//     try {
+//         const happyClient = await HappyClient.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+//         if (!happyClient) {
+//             return res.status(404).send('HappyClient not found');
+//         }
+//         res.status(200).send(happyClient);
+//     } catch (error) {
+//         res.status(400).send(error);
+//     }
+// });
 
-// Delete a HappyClient by ID
-router.delete('/happyclient/:id', async (req, res) => {
-    try {
-        const happyClient = await HappyClient.findByIdAndDelete(req.params.id);
-        if (!happyClient) {
-            return res.status(404).send('HappyClient not found');
-        }
-        res.status(200).send(happyClient);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
+// // Delete a HappyClient by ID
+// router.delete('/happyclient/:id', async (req, res) => {
+//     try {
+//         const happyClient = await HappyClient.findByIdAndDelete(req.params.id);
+//         if (!happyClient) {
+//             return res.status(404).send('HappyClient not found');
+//         }
+//         res.status(200).send(happyClient);
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// });
 
 
 module.exports = router;

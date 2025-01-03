@@ -1,34 +1,35 @@
 const mongoose = require('mongoose');
 
 // Define the schema for HappyClient
-const happyClientSchema = new mongoose.Schema({
-    stars: {
+const reviewSchema = new mongoose.Schema({
+    rating: {
         type: Number,
         required: true,
-        min: 1, // Minimum rating of 1 star
-        max: 5  // Maximum rating of 5 stars
     },
     description: {
         type: String,
         required: true,
     },
-    image: {
+    imageUrl: {
         type: String,
-        required: true, // URL of the client's image
+        required: false, // Image is optional
     },
-    product_name: {
+    productTitle: {
         type: String,
         required: true,
     },
-    price: {
-        type: Number,
+    productPrice: {
+        type: String,
         required: true,
-        min: 0, // price should be a positive number
     },
-}, { timestamps: true }); // adds createdAt and updatedAt fields
+    createdAt: {
+        type: Date,
+        default: Date.now, // Automatically set createdAt to current date
+    },
+});
 
 // Create the model from the schema
-const HappyClient = mongoose.model('HappyClient', happyClientSchema);
+const HappyClient = mongoose.model('Review', reviewSchema);
 
 // Export the model
 module.exports = HappyClient;

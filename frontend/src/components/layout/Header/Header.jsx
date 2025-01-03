@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { IoSearchSharp } from "react-icons/io5";
@@ -66,6 +66,8 @@ function Header() {
     const [productPrice, setProductPrice] = useState('');
     const productId = 1; // Example product ID
 
+
+
     const handleCountrySelect = (country) => {
         setSelectedCountry(country);
         setDropdownOpen(false);
@@ -89,7 +91,7 @@ function Header() {
         e.preventDefault();
         try {
             // Send review data to the backend
-            await axios.post('http://localhost:3000/reviews', {
+            await axios.post('http://localhost:3000/happyclient', {
                 productId,
                 rating,
                 description,
@@ -760,7 +762,7 @@ function Header() {
                         <div className="form-group mt-3">
                             <input
                                 type="file"
-                                
+
                                 value={imageUrl}
                                 onChange={(e) => setImageUrl(e.target.value)}
                                 placeholder="Product Image URL"
