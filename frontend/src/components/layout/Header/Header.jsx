@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { IoSearchSharp } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
@@ -178,7 +178,7 @@ function Header() {
                         </div>
 
                         <div className='info'>
-                            <a href="#" class="link-dark text-decoration-underline fw-bold">Need Help?</a>
+                            <a href="#" className="link-dark text-decoration-underline fw-bold">Need Help?</a>
                             <p>
                                 Address: 1234 Fashion Street, Suite 567, New York NY 10001
                             </p>
